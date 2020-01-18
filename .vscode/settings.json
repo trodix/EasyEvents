@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "/home/sebastien/.local/share/virtualenvs/easy-events-PyW8qbso/bin/python",
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true
+}
