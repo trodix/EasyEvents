@@ -10,7 +10,6 @@ autopep8 = "*"
 [packages]
 django = "*"
 djangorestframework = "*"
-django-rest-knox = "*"
 djangorestframework-simplejwt = "*"
 
 [requires]
