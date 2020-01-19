@@ -11,6 +11,7 @@ autopep8 = "*"
 django = "*"
 djangorestframework = "*"
 django-rest-knox = "*"
+djangorestframework-simplejwt = "*"
 
 [requires]
 python_version = "3.8"
