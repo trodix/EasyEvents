@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ event.title }}</h1>
+
+<p>{{ event.description }}</p>
+
+<div>
+    <h2>Adresse de l'évenement</h2>
+    <div>
+        <p>{{ event.address }}, {{ event.zipcode }} {{ event.city }}, {{ event.country }}</p>
+    </div>
+</div>
+<a class="btn btn-primary" href="{% url 'event_order' id=event.id %}">Réserver</a>
+{% endblock content %}
