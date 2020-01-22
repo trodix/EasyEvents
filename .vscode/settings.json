@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/run/media/DATA/workspace/DEV/easy-events/env/bin/python3.8",
+    "python.pythonPath": "env/bin/python",
     "editor.formatOnSave": true,
     "python.linting.pycodestyleEnabled": true,
     "python.linting.pylintPath": "pylint",
@@ -9,5 +9,6 @@
     "python.linting.pycodestyleArgs": ["--ignore=E501"],
     "files.exclude": {
       "**/*.pyc": true
-    }
+    },
+    "python.linting.enabled": true,
   }
