@@ -1,8 +1,13 @@
 from django.urls import path
-from .views import list_events, event_detail, event_order
+from .views import event_list, event_detail, event_detail_variation, add_to_cart, remove_from_cart
+
+app_name = 'app'
 
 urlpatterns = [
-    path('', list_events, name='list_events'),
-    path('event/<id>', event_detail, name='event_detail'),
-    path('event-order/<id>', event_order, name='event_order')
+    path('', event_list, name='events-list'),
+    path('details/<id>/', event_detail, name='event-detail'),
+    path('variation/<id>/', event_detail_variation,
+         name='event-detail-variation'),
+    path('add-to-cart/<id>/', add_to_cart, name='add-to-cart'),
+    path('remove-from-cart/<id>/', remove_from_cart, name='remove-from-cart')
 ]

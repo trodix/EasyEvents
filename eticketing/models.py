@@ -1,75 +1,74 @@
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
-from eticketing.utils import generate_ticket_number
 
 
 class Event(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    address = models.CharField(max_length=100)
-    address_details = models.CharField(max_length=100, null=True)
-    zipcode = models.CharField(max_length=10)
-    city = models.CharField(max_length=50)
-    country = models.CharField(max_length=30)
 
     def __str__(self):
         return self.title
 
 
-class EventDate(models.Model):
+class EventDetail(models.Model):
+    address = models.CharField(max_length=100)
+    address_details = models.CharField(max_length=100, null=True)
+    zipcode = models.CharField(max_length=10)
+    city = models.CharField(max_length=50)
+    country = models.CharField(max_length=30)
     event_date = models.DateTimeField()
     event = models.ForeignKey(
-        to=Event, on_delete=models.CASCADE, related_name='event_dates')
+        to=Event, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.event_date.isoformat()
+        return f"{self.address_details} - {self.address}, {self.city} {self.zipcode} {self.country}"
 
 
-class AttendeeType(models.Model):
-    name = models.CharField(max_length=100)
+class Item(models.Model):
+    attendee_type = models.CharField(max_length=100)
     event_price = models.DecimalField(max_digits=5, decimal_places=2)
     vat_rate = models.IntegerField()
-    event = models.ForeignKey(
-        to=Event, on_delete=models.CASCADE, related_name='attendee_types')
+    event_detail = models.ForeignKey(
+        to=EventDetail, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.event.title + ' - ' + self.name
+        return f"{self.event_detail.event.title} - {self.event_detail.address_details} - {self.event_detail.event_date.strftime('%Y-%m-%d %H:%M')} - {self.attendee_type}"
+
+    def get_ttc_price(self):
+        return float(self.event_price) * float((1 + (self.vat_rate / 100)))
 
 
-class Customer(models.Model):
+class UserAddress(models.Model):
     lastname = models.CharField(max_length=50)
     firstname = models.CharField(max_length=50)
     company_name = models.CharField(max_length=50, null=True)
-    phone = models.CharField(max_length=15, null=True)
-    email = models.EmailField()
-    billing_address = models.CharField(max_length=100)
-    billing_zipcode = models.CharField(max_length=10)
-    billing_city = models.CharField(max_length=50)
-    billing_country = models.CharField(max_length=30)
+    address1 = models.CharField(max_length=100)
+    address2 = models.CharField(max_length=100, null=True)
+    zipcode = models.CharField(max_length=10)
+    city = models.CharField(max_length=50)
+    country = models.CharField(max_length=30)
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+
+class OrderItem(models.Model):
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    ordered = models.BooleanField(default=False)
+    quantity = models.IntegerField(default=1)
+    item = models.ForeignKey(
+        to=Item, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.lastname + ' ' + self.firstname
+        return f"{self.item.event_detail.event.title} - {self.item.event_detail.address_details} - {self.item.attendee_type} - x{self.quantity}"
 
 
-class EventOrder(models.Model):
-    order_date = models.DateTimeField(default=timezone.now)
-    amount = models.DecimalField(max_digits=5, decimal_places=2)
-    event = models.ForeignKey(
-        to=Event, on_delete=models.CASCADE, related_name='event_orders')
-    customer = models.ForeignKey(
-        to=Customer, on_delete=models.CASCADE, related_name='event_orders')
-
-    def __str__(self):
-        return self.order_date.isoformat()
-
-
-class EventTicket(models.Model):
-    ticket_number = models.CharField(
-        max_length=20, default=generate_ticket_number(), editable=False, unique=True)
-    event = models.ForeignKey(
-        to=Event, on_delete=models.CASCADE, related_name='event_tickets')
-    attendee_type = models.ForeignKey(
-        to=AttendeeType, on_delete=models.CASCADE, related_name='event_tickets')
-
-    def __str__(self):
-        return self.ticket_number
+class Order(models.Model):
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    address = models.ForeignKey(
+        to=UserAddress, on_delete=models.SET_NULL, null=True)
+    items = models.ManyToManyField(OrderItem)
+    ordered_date = models.DateTimeField()
+    ordered = models.BooleanField(default=False)

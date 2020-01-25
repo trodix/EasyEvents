@@ -1,15 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{ event.title }}</h1>
+    <h1>{{ event.title }}</h1>
 
-<p>{{ event.description }}</p>
+    <p>{{ event.description }}</p>
 
-<div>
-    <h2>Adresse de l'évenement</h2>
     <div>
-        <p>{{ event.address }}, {{ event.zipcode }} {{ event.city }}, {{ event.country }}</p>
+        <h2>Variations disponibles</h2>
+        {% if event.eventdetail_set.all|length > 0 %}
+            {% for event_eventdetail in event.eventdetail_set.all %}
+                <div class="card">
+                    <div class="card-body">
+                        <input type="hidden" value="{{ event_eventdetail.id }}">
+                        <p>{{ event_eventdetail.event_date }}</p>
+                        <p>{{ event_eventdetail.address_details }}</p>
+                        <p>
+                            {{ event_eventdetail.address }}, 
+                            {{ event_eventdetail.zipcode }} 
+                            {{ event_eventdetail.city }} 
+                            {{ event_eventdetail.country}}
+                        </p>
+                        <a href="{% url 'app:event-detail-variation' id=event_eventdetail.id %}" class="btn btn-primary">Réserver</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+        <p>Aucune Variation disponible pour le moment.</p>
+        {% endif %}
     </div>
-</div>
-<a class="btn btn-primary" href="{% url 'event_order' id=event.id %}">Réserver</a>
 {% endblock content %}

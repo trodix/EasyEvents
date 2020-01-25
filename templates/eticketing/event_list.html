@@ -4,13 +4,13 @@
 
     <h1>Liste des évenements disponibles</h1>
     
-    {% for event in event_list %}
+    {% for event in events %}
         <div class="card" style="width: 18rem;">
             <img src="https://via.placeholder.com/150x100" class="card-img-top" alt="">
             <div class="card-body">
                 <h5 class="card-title">{{ event.title }}</h5>
                 <p class="card-text">{{ event.description|truncatechars:150 }}</p>
-                <a href="{% url 'event_detail' id=event.id %}" class="btn btn-primary">Plus de détails</a>
+                <a href="{% url 'app:event-detail' id=event.id %}" class="btn btn-primary">Plus de détails</a>
             </div>
         </div>
     {% endfor %}

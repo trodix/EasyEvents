@@ -4,47 +4,23 @@
 <div class="row">
     <div class="col">
         <h1>Réservation de l'évenement: {{ event.title }}</h1>
+        <p>Date de réservation:<span>{{ event_date.event_date }}</span></p>
         {% if message is defined %}
             <form method="post">
-                <div class="form-group">
-                    <label for="lastname">Nom</label>
-                    <input type="text" name="lastname" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="firstname">Prénom</label>
-                    <input type="text" name="firstname" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" class="form-control">
-                </div>
-
-                <hr>
-
-                <h2>Informations de facturation</h2>
-
-                <div class="form-group">
-                    <label for="billing_address">Adresse</label>
-                    <input type="text" name="billing_address" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="billing_zipcode">Code postal</label>
-                    <input type="text" name="billing_zipcode" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="billing_city">Ville</label>
-                    <input type="text" name="billing_city" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="billing_country">Pays</label>
-                    <input type="text" name="billing_country" class="form-control">
-                </div>
-
+                {% for field in form %}
+                    <div class="form-group">
+                        {% if field.errors %}
+                        <div class="alert alert-danger">
+                            {{ field.errors }}
+                        </div>
+                        {% endif %}
+                        {{ field.label_tag }} {{ field }}
+                        {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+               
                 {% csrf_token %}
                 <input type="submit" value="Commander" class="btn btn-primary">
             </form>
