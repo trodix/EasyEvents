@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "env/bin/python",
+    "python.pythonPath": "/home/sebastien/.local/share/virtualenvs/EasyEvents-9ww75jFa/bin/python",
     "editor.formatOnSave": true,
     "python.linting.pycodestyleEnabled": true,
     "python.linting.pylintPath": "pylint",

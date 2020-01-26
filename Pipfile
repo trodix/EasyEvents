@@ -11,9 +11,8 @@ pylint-django = "*"
 
 [packages]
 django = "*"
-djangorestframework = "*"
-djangorestframework-simplejwt = "*"
 mysqlclient = "*"
+django-allauth = "*"
 
 [requires]
 python_version = "3.8"
