@@ -5,16 +5,28 @@
     <h1>{{ event_detail.event.title }}</h1>
     <h2>Liste des tarifs disponibles</h2>
     {% if event_detail.item_set.all|length > 0 %}
-        {% for variation in event_detail.item_set.all %}
-            <div class="card">
+    <div class="row">
+        <div class="col-fluid d-inline-flex flex-wrap">
+            {% for variation in event_detail.item_set.all %}
+            <div class="card m-3">
                 <div class="card-body">
                     <h5 class="card-title">{{ variation.attendee_type }}</h5>
                     <p>prix TTC <span>{{ variation.get_ttc_price }}</span></p>
                 </div>
-                <a class="btn btn-danger" href="{% url 'app:remove-from-cart' id=variation.id %}">Supprimer du panier</a>
-                <a class="btn btn-primary" href="{% url 'app:add-to-cart' id=variation.id %}">Acheter</a>
+                <div class="card-action">
+                    <a class="btn btn-danger" href="{% url 'app:remove-from-cart' id=variation.id %}">
+                        <i class="fas fa-trash"></i>
+                        Enlever du panier
+                    </a>
+                    <a class="btn btn-primary" href="{% url 'app:add-to-cart' id=variation.id %}">
+                        <i class="fas fa-cart-arrow-down"></i>
+                        Acheter
+                    </a>
+                </div>
             </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
     {% else %}
     <p>Aucun tarif disponible pour le moment.</p>
     {% endif %}
