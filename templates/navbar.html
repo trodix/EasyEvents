@@ -14,14 +14,16 @@
       <a class="nav-item nav-link active" href="/">Acheter un billet</a>
     </div>
     <form class="form-inline ml-auto mr-auto">
+    <div class="search-bar">
       <input class="form-control" type="search" placeholder="Rechercher" aria-label="Rechercher">
-      <button class="btn btn-primary mr-2 my-sm-0" type="submit">
+      <button class="btn btn-primary" type="submit">
         <i class="fas fa-search"></i>
         Rechercher
       </button>
+    </div>
     </form>
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="#">
+      <a class="nav-item nav-link" href="{% url 'app:order-summary' %}">
         <span class="badge badge-pill badge-primary">{{ request.user|cart_item_count }}</span>
         <i class="fas fa-shopping-cart"></i>
         Panier

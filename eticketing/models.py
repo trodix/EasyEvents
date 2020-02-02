@@ -63,6 +63,9 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.item.event_detail.event.title} - {self.item.event_detail.address_details} - {self.item.attendee_type} - x{self.quantity}"
 
+    def get_total_item_price(self):
+        return self.item.get_ttc_price() * self.quantity
+
 
 class Order(models.Model):
     user = models.ForeignKey(
@@ -72,3 +75,9 @@ class Order(models.Model):
     items = models.ManyToManyField(OrderItem)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
+
+    def get_total(self):
+        price = 0
+        for item in self.items.all():
+            price += item.get_total_item_price()
+        return price

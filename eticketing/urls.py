@@ -1,5 +1,7 @@
 from django.urls import path
-from .views import event_list, event_detail, event_detail_variation, add_to_cart, remove_from_cart
+
+from .views import (OrderSummaryView, add_to_cart, event_detail,
+                    event_detail_variation, event_list, remove_from_cart)
 
 app_name = 'app'
 
@@ -9,5 +11,7 @@ urlpatterns = [
     path('variation/<id>/', event_detail_variation,
          name='event-detail-variation'),
     path('add-to-cart/<id>/', add_to_cart, name='add-to-cart'),
-    path('remove-from-cart/<id>/', remove_from_cart, name='remove-from-cart')
+    path('remove-from-cart/<id>/', remove_from_cart, name='remove-from-cart'),
+    path('order-summary/', OrderSummaryView.as_view(), name='order-summary'),
+    path('', OrderSummaryView.as_view(), name='checkout')
 ]

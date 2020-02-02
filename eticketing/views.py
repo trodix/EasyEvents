@@ -1,9 +1,13 @@
-from django.views.decorators.csrf import csrf_protect
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views import generic
-from .models import Event, EventDetail, Item, Order, OrderItem
-from django.utils import timezone
 from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_protect
+from django.views.generic.detail import DetailView, View
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+from .models import Event, EventDetail, Item, Order, OrderItem
 
 
 def event_list(request):
@@ -30,6 +34,19 @@ def event_detail_variation(request, id):
     })
 
 
+class OrderSummaryView(LoginRequiredMixin, View):
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+        except ObjectDoesNotExist:
+            messages.error(self.request, "You do not have an active order")
+            return redirect('app:events-list')
+        return render(self.request, 'eticketing/order_summary.html', {
+            'object': order
+        })
+
+
+@login_required
 def add_to_cart(request, id):
     item = get_object_or_404(Item, id=id)
     event_detail = item.event_detail
@@ -63,6 +80,7 @@ def add_to_cart(request, id):
         return redirect('app:event-detail-variation', id=event_detail.id)
 
 
+@login_required
 def remove_from_cart(request, id):
     item = get_object_or_404(Item, id=id)
     event_detail = item.event_detail

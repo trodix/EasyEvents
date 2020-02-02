@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Evénement</th>
+        <th scope="col">Lieux</th>
+        <th scope="col">Variation</th>
+        <th scope="col">Prix unitaire</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order_item in object.items.all %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>{{ order_item.item.event_detail.event.title }}</td>
+          <td>{{ order_item.item.event_detail.city }}</td>
+          <td>{{ order_item.item.attendee_type }}</td>
+          <td>{{ order_item.item.get_ttc_price }}</td>
+          <td>{{ order_item.quantity }}</td>
+          <td>{{ order_item.get_total_item_price }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td>Votre panier est vide</td>
+        </tr>
+        <tr>
+          <td colspan="6"><a href="{% url 'app:events-list' %}" class="btn btn-secondary float-right">Continuer mes achats</a></td>
+        </tr>
+      {% endfor %}
+      {% if object.get_total %}
+        <tr>
+          <td colspan="6"><b>Montant total TTC</b></td>
+          <td><b>{{ object.get_total }}</b></td>
+        </tr>
+        <tr>
+          <td colspan="6"><a href="{% url 'app:events-list' %}" class="btn btn-secondary float-right">Continuer mes achats</a></td>
+          <td colspan="6"><a href="{% url 'app:checkout' %}" class="btn btn-primary float-right">Proceder au paiement</a></td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock content %}
