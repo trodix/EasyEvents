@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django_countries.fields import CountryField
 
 
 class Event(models.Model):
@@ -39,17 +40,17 @@ class Item(models.Model):
         return float(self.event_price) * float((1 + (self.vat_rate / 100)))
 
 
-class UserAddress(models.Model):
-    lastname = models.CharField(max_length=50)
-    firstname = models.CharField(max_length=50)
-    company_name = models.CharField(max_length=50, null=True)
-    address1 = models.CharField(max_length=100)
-    address2 = models.CharField(max_length=100, null=True)
+class BillingAddress(models.Model):
+    street_address = models.CharField(max_length=100)
+    apartment_address = models.CharField(max_length=100, null=True)
     zipcode = models.CharField(max_length=10)
     city = models.CharField(max_length=50)
-    country = models.CharField(max_length=30)
+    country = CountryField(multiple=False)
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
 
 
 class OrderItem(models.Model):
@@ -71,7 +72,7 @@ class Order(models.Model):
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     address = models.ForeignKey(
-        to=UserAddress, on_delete=models.SET_NULL, null=True)
+        to=BillingAddress, on_delete=models.SET_NULL, null=True, blank=True)
     items = models.ManyToManyField(OrderItem)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)

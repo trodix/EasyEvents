@@ -1,24 +1,36 @@
 from django import forms
+from django_countries.fields import CountryField
+from django_countries.widgets import CountrySelectWidget
+
+PAYMENT_CHOICES = {
+    ('stripe', 'Stripe'),
+    ('visa', 'Visa')
+}
 
 
-class CustomerForm(forms.Form):
-    lastname = forms.CharField(label='Nom', max_length=100, label_suffix='',
-                               widget=forms.TextInput(attrs={'class': 'form-control'}))
-
-    firstname = forms.CharField(label='Prénom', max_length=100, label_suffix='',
-                                widget=forms.TextInput(attrs={'class': 'form-control'}))
-
-    email = forms.EmailField(label='Email', max_length=100, label_suffix='',
-                             widget=forms.EmailInput(attrs={'class': 'form-control'}))
-
-    billing_address = forms.CharField(label='Adresse', max_length=100, label_suffix='',
-                                      widget=forms.TextInput(attrs={'class': 'form-control'}))
-
-    billing_zipcode = forms.CharField(label='Code postal', max_length=5, label_suffix='',
-                                      widget=forms.NumberInput(attrs={'class': 'form-control'}))
-
-    billing_city = forms.CharField(label='Ville', max_length=100, label_suffix='',
-                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
-
-    billing_country = forms.CharField(label='Pays', max_length=100, label_suffix='',
-                                      widget=forms.TextInput(attrs={'class': 'form-control'}))
+class CheckoutForm(forms.Form):
+    street_address = forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder': 'numéro et rue',
+        'class': 'form-control'
+    }))
+    apartment_address = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'placeholder': 'Appartement, porte, bâtiment',
+        'class': 'form-control'
+    }))
+    city = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control'
+    }))
+    zipcode = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control'
+    }))
+    country = CountryField(blank_label='Choisir un pays').formfield(widget=CountrySelectWidget(attrs={
+        'class': 'form-control'
+    }))
+    same_shipping_address = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={
+        'class': 'form-control'
+    }))
+    save_info = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={
+        'class': 'form-control'
+    }))
+    payment_option = forms.ChoiceField(
+        widget=forms.RadioSelect, choices=PAYMENT_CHOICES)

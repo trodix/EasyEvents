@@ -1,6 +1,75 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
+<h1>Paiement de votre commande</h1>
+
+<div class="row">
+  <div class="col-8">
+    <div class="card">
+      <div class="card-body">
+        <form method="post">
+          <div class="form-group">
+              <label for="street_address">Adresse</label>
+              {{ form.street_address }}
+          </div>
+          <div class="">
+            <div class="form-group">
+              <label for="apartment_address">Adresse 2 (Optionelle)</label>
+              {{ form.apartment_address }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4 form-group">
+              <label for="city">Ville</label>
+              {{ form.city }}
+            </div>
+            <div class="col-4 form-group">
+              <label for="zipcode">Code postal</label>
+              {{ form.zipcode }}
+            </div>
+            <div class="col-4 form-group">
+              <label for="country">Pays</label>
+              {{ form.country }}
+            </div>
+          </div>
+          <div class="">
+            <div class="form-group">
+              <input {% if form.same_shipping_address.value %}checked{% endif %} type="checkbox" class="form-input" name="same_shipping_address" id="same_shipping_address">
+              <label for="same_shipping_address">Utiliser la même adresse pour la livraison et la facturation</label>
+            </div>
+          </div>
+          <div class="">
+            <div class="form-group">
+              <input {% if form.save_info.value %}checked{% endif %} type="checkbox" class="form-input" name="save_info" id="save_info">
+              <label for="save_info">Se souvenir de ces informations pour la prochaine fois</label>
+            </div>
+          </div>
+          <div class="">
+            <div class="form-group form-check">
+              <p>Methode de paiement :</p>
+              {% for value, name in form.fields.payment_option.choices %}
+                <div class="row">
+                  <div class="col">
+                    <input type="radio" name="payment_option" id="{{ value }}" value="{{ value }}" required>
+                    <label for="{{ value }}">{{ name }}</label>                  
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="">
+            <div class="form-group">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary float-right">Payer ma commande</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-4"></div>
+</div>
 
 {% endblock %}
