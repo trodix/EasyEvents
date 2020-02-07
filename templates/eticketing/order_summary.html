@@ -23,8 +23,15 @@
           <td>{{ order_item.item.event_detail.city }}</td>
           <td>{{ order_item.item.attendee_type }}</td>
           <td>{{ order_item.item.get_ttc_price }}</td>
-          <td>{{ order_item.quantity }}</td>
-          <td>{{ order_item.get_total_item_price }}</td>
+          <td>
+            <a href="{% url 'app:remove-single-from-cart' id=order_item.item.id %}"><i class="fas fa-minus mr-2"></i></a>
+            {{ order_item.quantity }}
+            <a href="{% url 'app:add-single-to-cart' id=order_item.item.id %}"><i class="fas fa-plus ml-2"></i></a>
+          </td>
+          <td>
+            {{ order_item.get_total_item_price }}
+            <a href="{% url 'app:remove-from-cart' id=order_item.item.id %}" class="text-danger float-right"><i class="fas fa-trash"></i></a>
+          </td>
         </tr>
       {% empty %}
         <tr>
